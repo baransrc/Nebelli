@@ -20,6 +20,7 @@ public class EndGameItem : Item
     public override void Activate(Player player)
     {
         Debug.Log("Game has ended.");
+        player.SetColor(Color);
     }
 
     public override bool CanCollide(Player player)

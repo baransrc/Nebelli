@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private TouchManager _touchManager = NullObject.TouchManager;
     [SerializeField] private GameObject _cellPrefab = NullObject.GameObject;
     [SerializeField] private GameObject _transformItemPrefab = NullObject.GameObject;
+    [SerializeField] private GameObject _endGameItemPrefab = NullObject.GameObject;
 
     private void Awake()
     {
@@ -86,8 +87,6 @@ public class GameController : MonoBehaviour
         if (!CanPlayerActivateTheItemInCell(currentCell))
             destination -= direction;
 
-        Debug.Log(!currentCell.Empty ? currentCell.Item.Color.ToString() : "Cell is empty.");
-
         return Mathf.Abs(destination - playerX) * direction;
     }
 
@@ -113,8 +112,6 @@ public class GameController : MonoBehaviour
 
         if (!CanPlayerActivateTheItemInCell(currentCell))
             destination -= direction;
-
-        Debug.Log(!currentCell.Empty ? currentCell.Item.Color.ToString() : "Cell is empty.");
 
         return Mathf.Abs(destination - playerY) * direction;
     }
@@ -142,8 +139,6 @@ public class GameController : MonoBehaviour
         if (!CanPlayerActivateTheItemInCell(currentCell))
             destination -= direction;
 
-        Debug.Log(!currentCell.Empty ? currentCell.Item.Color.ToString() : "Cell is empty.");
-
         return Mathf.Abs(destination - playerY) * direction;
     }
 
@@ -157,12 +152,17 @@ public class GameController : MonoBehaviour
         _grid = new Grid(_gridWidth, _gridHeight, _player);
         PopulateGrid(_gridWidth, _gridHeight);
         transform.position = (new Vector2(_gridWidth, _gridHeight) * -0.5f);
+
+        _grid[0, 5].Item = CreateTransformItem(PredefinedColor.Red, _grid[0, 5]);
+        _grid[9, 5].Item = CreateEndGameItem(PredefinedColor.Colorless, _grid[9, 5]);
     }
 
     private Cell CreateCell()
     {
         return Instantiate(_cellPrefab, transform).GetComponent<Cell>();
     }
+
+    #region Item Creation
 
     private TransformItem CreateTransformItem(PredefinedColor color, Cell cell)
     {
@@ -172,6 +172,16 @@ public class GameController : MonoBehaviour
 
         return item;
     }
+
+    private EndGameItem CreateEndGameItem(PredefinedColor color, Cell cell)
+    {
+        var item = Instantiate(_endGameItemPrefab, transform).GetComponent<EndGameItem>();
+        item.Initialize(this, cell);
+        
+        return item;
+    }
+
+    #endregion
 
     private void PopulateGrid (int gridWidth, int gridHeight)
     {
