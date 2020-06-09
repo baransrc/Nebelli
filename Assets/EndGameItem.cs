@@ -28,6 +28,11 @@ public class EndGameItem : Item
         return true;
     }
 
+    public override ItemType GetItemType()
+    {
+        return ItemType.EndGameItem;
+    }
+
     public override void Initialize(GameController gameController, Cell cell)
     {
         _gameController = gameController;

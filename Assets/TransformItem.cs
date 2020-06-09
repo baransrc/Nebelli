@@ -29,6 +29,11 @@ public class TransformItem : Item
         return player.Color != Color;
     }
 
+    public override ItemType GetItemType()
+    {
+        return ItemType.TransformItem;
+    }
+
     public override void Initialize(GameController gameController, Cell cell)
     {
         _gameController = gameController;

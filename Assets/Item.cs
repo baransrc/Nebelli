@@ -7,7 +7,7 @@ public abstract class Item : MonoBehaviour
     [SerializeField] protected VisualChangeManager _visualChangeManager;
     protected Cell _cell;
     protected GameController _gameController;
-
+ 
     public abstract Vector2 LocalPosition { set; get; }
 
     public abstract bool CanCollide(Player player);
@@ -17,4 +17,6 @@ public abstract class Item : MonoBehaviour
     public abstract void Activate(Player player);
 
     public abstract void SetColor(PredefinedColor color);
+
+    public abstract ItemType GetItemType();
 }

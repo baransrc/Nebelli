@@ -3,6 +3,7 @@ using System.Collections;
 
 public enum ItemType
 {
-    TransformItem,
-    EndGameItem,
+    None = -1,
+    TransformItem = 0,
+    EndGameItem = 1,
 }

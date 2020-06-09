@@ -4,6 +4,8 @@ using UnityEditor.VersionControl;
 
 public class Cell : MonoBehaviour
 {
+    [SerializeField] private SpriteRenderer _spriteRenderer;
+
     public Item Item { get; set; }
 
     public Vector2 LocalPosition
@@ -23,10 +25,25 @@ public class Cell : MonoBehaviour
     { 
         get
         {
-            return Item == NullObject.Item;
+            return Enabled && Item == NullObject.Item;
         }
         
         private set { }
+    }
+
+    private bool _enabled = true;
+    public bool Enabled
+    {
+        get
+        {
+            return _enabled;
+        }
+
+        set
+        {
+            _enabled = value;
+            _spriteRenderer.enabled = value;
+        }
     }
 
     public void React(Player player)
@@ -38,6 +55,7 @@ public class Cell : MonoBehaviour
 
     public bool AcceptPlayer(Player player)
     {
+        if (!Enabled) return false;
         if (Empty) return true;
 
         return Item.CanCollide(player);
