@@ -13,9 +13,14 @@ public class LevelFileReader : MonoBehaviour
 
     }
 
+    public void SetFileName(string fileName)
+    {
+        _fileName = fileName;
+    }
+
     public LevelProperties GetCurrentLevelProperties()
     {
-        var lines = File.ReadAllLines(Application.dataPath + "/Resources/Level/" + _fileName);
+        var lines = File.ReadAllLines(Strings.LevelDataPath + _fileName);
 
 
         var gridWidth = int.Parse(string.Join("", lines[0].Split(':').Skip(1)));

@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class GridIndicator : MonoBehaviour
 {
-    [SerializeField] private EditorGridContainerVisual _cellVisual;
-    [SerializeField] private EditorGridContainerVisual _itemVisual;
+    [SerializeField] private EditorGridContainerVisual _cellVisual = NullObject.EditorGridContainerVisual;
+    [SerializeField] private EditorGridContainerVisual _itemVisual = NullObject.EditorGridContainerVisual;
 
     private LevelEditor _levelEditor;
 

@@ -4,7 +4,7 @@ using UnityEditor.VersionControl;
 
 public class Cell : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer _spriteRenderer;
+    [SerializeField] private SpriteRenderer _spriteRenderer = NullObject.SpriteRenderer;
 
     public Item Item { get; set; }
 

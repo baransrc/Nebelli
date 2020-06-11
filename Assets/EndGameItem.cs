@@ -25,7 +25,7 @@ public class EndGameItem : Item
 
     public override bool CanCollide(Player player)
     {
-        return true;
+        return Color == PredefinedColor.Colorless || player.Color != Color;
     }
 
     public override ItemType GetItemType()
@@ -43,7 +43,7 @@ public class EndGameItem : Item
 
     public override void SetColor(PredefinedColor color)
     {
-        Color = PredefinedColor.Colorless;
+        Color = color;
         _visualChangeManager.ChangeColor(Color);
     }
 }
