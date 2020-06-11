@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Schema;
+using UnityEditor.Build;
 using UnityEngine;
 
 public class GridIndicator : MonoBehaviour
 {
     [SerializeField] private EditorGridContainerVisual _cellVisual = NullObject.EditorGridContainerVisual;
     [SerializeField] private EditorGridContainerVisual _itemVisual = NullObject.EditorGridContainerVisual;
+    [SerializeField] private EditorGridContainerVisual _playerVisual = NullObject.EditorGridContainerVisual;
 
     private LevelEditor _levelEditor;
 
@@ -21,6 +23,27 @@ public class GridIndicator : MonoBehaviour
         set
         {
             transform.localPosition = value;
+        }
+    }
+
+    private bool _hasPlayer;
+    public bool HasPlayer
+    {
+        get
+        {
+            return _hasPlayer;
+        }
+        set 
+        {
+            _hasPlayer = value;
+            _playerVisual.EnableSprite(value);
+
+            if (!_hasPlayer) return;
+
+            Enabled = true;
+
+            ItemType = ItemType.None;
+            Color = PredefinedColor.Colorless;
         }
     }
 
@@ -72,6 +95,7 @@ public class GridIndicator : MonoBehaviour
         {
             _color = value;
             _itemVisual.SetColor(_color);
+            _playerVisual.SetColor(_color);
         }
     }
 
@@ -79,5 +103,6 @@ public class GridIndicator : MonoBehaviour
     {
         _levelEditor = levelEditor;
         Enabled = false;
+        HasPlayer = false;
     }
 }

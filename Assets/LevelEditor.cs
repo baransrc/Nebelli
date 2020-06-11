@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.ComTypes;
+using System.Numerics;
 using UnityEngine;
 
 public enum InsertMode
 {
     AddCell,
-    DeleteCell
+    DeleteCell,
+    AddPlayer,
 }
 
 public class LevelEditor : MonoBehaviour
@@ -37,10 +36,11 @@ public class LevelEditor : MonoBehaviour
     private ItemType _itemType;
 
     private GridIndicator[,] _gridIndicators;
+    private Vector2Int _lastPlayerLocation = new Vector2Int(0,0);
 
     private void Awake()
     {
-        transform.position = new Vector3(_defaultGridSize.x, _defaultGridSize.y, 0f) * -0.5f;
+        transform.position = new UnityEngine.Vector3(_defaultGridSize.x, _defaultGridSize.y, 0f) * -0.5f;
         _gridIndicators = new GridIndicator[_defaultGridSize.x, _defaultGridSize.y];
         
         InitializeGridIndicator();
@@ -51,6 +51,8 @@ public class LevelEditor : MonoBehaviour
         UpdateItemType();
         UpdateItemColor();
         UpdateInsertMode();
+
+        GetGridByPosition(_lastPlayerLocation).HasPlayer = true;
     }
 
     private void OnEnable()
@@ -77,7 +79,7 @@ public class LevelEditor : MonoBehaviour
     {
         var gridIndicator = Instantiate(_gridIndicatorPrefab, transform).GetComponent<GridIndicator>();
         gridIndicator.Initialize(this);
-        gridIndicator.LocalPosition = new Vector2(x, y);
+        gridIndicator.LocalPosition = new UnityEngine.Vector2(x, y);
 
         return gridIndicator;
     }
@@ -138,6 +140,7 @@ public class LevelEditor : MonoBehaviour
         foreach (var grid in _gridIndicators)
         {
             grid.Enabled = false;
+            grid.HasPlayer = false;
         }
 
         _levelFileReader.SetFileName(levelName);
@@ -145,6 +148,7 @@ public class LevelEditor : MonoBehaviour
         var gridWidth = levelProperties.GridWidth;
         var gridHeight = levelProperties.GridHeight;
 
+        GetGridByPosition(new Vector2Int(levelProperties.PlayerPosX, levelProperties.PlayerPosY)).HasPlayer = true;
 
         for (var x = 0; x < gridWidth; ++x)
         {
@@ -165,9 +169,74 @@ public class LevelEditor : MonoBehaviour
         }
     }
 
-    public void Save(string levelName)
+    public string GetSaveFile(string levelName)
     {
         Debug.Log("Save: " + levelName);
+
+        var minY = _defaultGridSize.y;
+        var maxY = 0;
+        var minX = _defaultGridSize.x;
+        var maxX = 0;
+        var isEmpty = true;
+        var hasPlayer = false;
+        var playerPos = Vector2Int.zero;
+
+        for (var x = 0; x < _defaultGridSize.x; ++x)
+        {
+            for (var y = 0; y < _defaultGridSize.y; ++y)
+            {
+                var currentPos = new Vector2Int(x, y);
+                var grid = GetGridByPosition(currentPos);
+
+                if (!grid.Enabled)
+                    continue;
+
+                isEmpty = false;
+
+                if (grid.HasPlayer)
+                {
+                    hasPlayer = true;
+                    playerPos = currentPos;
+                }
+                
+                if (x > maxX) 
+                    maxX = x;
+                if (x < minX)
+                    minX = x;
+                if (y > maxY)
+                    maxY = y;
+                if (y < minY)
+                    minY = y;
+            }
+        }
+
+        if (isEmpty) 
+            return Strings.Empty;
+
+        if (!hasPlayer)
+            return Strings.NoPlayer;
+
+        var gridWidth = maxX - minX + 1;
+        var gridHeight = maxY - minY + 1;
+
+        var levelString = "Width:" + gridWidth + 
+                          "\nHeight:" + gridHeight + 
+                          "\nPlayer:" + (playerPos.x-minX) + "," + (playerPos.y-minY) + " " + (int)GetGridByPosition(playerPos).Color;
+
+        for (var x = minX; x <= maxX; ++x)
+        {
+            for (var y = minY; y <= maxY; ++y)
+            {
+                var grid = GetGridByPosition(new Vector2Int(x, y));
+                
+                if (grid.HasPlayer)
+                    continue;
+
+                levelString += "\n" + (x - minX) + "," + (y - minY) + ":" + (grid.Enabled ? 1 : 0) + " " + (int)grid.ItemType + " " + (int)grid.Color;
+            }
+        }
+        
+        return levelString;
     }
 
     private void ParseMouseEvent()
@@ -189,8 +258,25 @@ public class LevelEditor : MonoBehaviour
         var inserting = (_insertMode != InsertMode.DeleteCell);
 
         correspondingGrid.Enabled = inserting;
-        correspondingGrid.ItemType = (inserting) ? _itemType : ItemType.None;
+
+        correspondingGrid.ItemType = (_insertMode == InsertMode.AddCell) ? _itemType : ItemType.None;
+        
+        correspondingGrid.HasPlayer = (_insertMode == InsertMode.AddPlayer);
+        
         correspondingGrid.Color = (inserting) ? _itemColor : PredefinedColor.Colorless;
+
+        if (_insertMode != InsertMode.AddPlayer)
+            return;
+
+        if (_lastPlayerLocation == touchPositionInt)
+            return;
+
+        var previousPlayerGrid = GetGridByPosition(_lastPlayerLocation);
+
+        previousPlayerGrid.Enabled = false;
+        previousPlayerGrid.HasPlayer = false;
+
+        _lastPlayerLocation = touchPositionInt;
     }
 
     private void Update()
