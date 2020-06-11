@@ -16,7 +16,8 @@ public class LevelEditorInputHandler : MonoBehaviour
 
     private void ChangePromptText(string text)
     {
-        _prompt.text = text;
+        StopAllCoroutines();
+        StartCoroutine(Helper.DisplayText(_prompt, text, 0.2f, 1f, 0.2f));
     }
 
     public void OnClickSaveButton()

@@ -17,7 +17,6 @@ public class GameController : MonoBehaviour
 
     [SerializeField] private Player _player = NullObject.Player;
     [SerializeField] private TouchManager _touchManager = NullObject.TouchManager;
-    [SerializeField] private LevelFileReader _levelFileReader = NullObject.LevelFileReader;
 
     [SerializeField] private GameObject _cellPrefab = NullObject.GameObject;
     [SerializeField] private GameObject _transformItemPrefab = NullObject.GameObject;
@@ -38,7 +37,7 @@ public class GameController : MonoBehaviour
 
     private void InitializeLevel()
     {
-        var levelProperties = _levelFileReader.GetCurrentLevelProperties();
+        var levelProperties = LevelFileReader.ConvertFileToLevelProperties(PlayerPrefs.GetString(Strings.NextLevel_PlayerPref_String, "denemeLevel.lvl"));
 
         _gridWidth = levelProperties.GridWidth;
         _gridHeight = levelProperties.GridHeight;

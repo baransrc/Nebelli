@@ -12,7 +12,6 @@ public static class NullObject
 
     // MonoBehaviour:
     public readonly static LevelEditor LevelEditor = null;
-    public readonly static LevelFileReader LevelFileReader = null;
     public readonly static PlayerVisualChangeManager PlayerVisualChangeManager = null;
     public readonly static EditorGridContainerVisual EditorGridContainerVisual = null;
     public readonly static Player Player = null;

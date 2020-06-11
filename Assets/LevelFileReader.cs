@@ -4,23 +4,11 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 
-public class LevelFileReader : MonoBehaviour
+public static class LevelFileReader
 {
-    [SerializeField] private string _fileName = "denemeLevel.lvl";
-
-    private void Awake()
+    public static LevelProperties ConvertFileToLevelProperties(string fileName)
     {
-
-    }
-
-    public void SetFileName(string fileName)
-    {
-        _fileName = fileName;
-    }
-
-    public LevelProperties GetCurrentLevelProperties()
-    {
-        var lines = File.ReadAllLines(Strings.LevelDataPath + _fileName);
+        var lines = File.ReadAllLines(Strings.LevelDataPath + fileName);
 
 
         var gridWidth = int.Parse(string.Join("", lines[0].Split(':').Skip(1)));

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum InsertMode
 {
@@ -28,8 +29,7 @@ public class LevelEditor : MonoBehaviour
     [SerializeField] private TMPro.TMP_Dropdown _itemTypeDropdown = NullObject.TMP_Dropdown;
     [SerializeField] private TMPro.TMP_Dropdown _itemColorDropdown = NullObject.TMP_Dropdown;
     [SerializeField] private TMPro.TMP_Dropdown _insertModeDropdown = NullObject.TMP_Dropdown;
-
-    [SerializeField] private LevelFileReader _levelFileReader = NullObject.LevelFileReader;
+    [SerializeField] private TMPro.TMP_InputField _levelNameInputField = NullObject.TMP_InputField;
 
     private InsertMode _insertMode;
     private PredefinedColor _itemColor;
@@ -53,6 +53,10 @@ public class LevelEditor : MonoBehaviour
         UpdateInsertMode();
 
         GetGridByPosition(_lastPlayerLocation).HasPlayer = true;
+
+        var currentLevel = PlayerPrefs.GetString(Strings.NextLevel_PlayerPref_String, "denemeLevel.lvl");
+        _levelNameInputField.text = currentLevel;
+        Load(currentLevel);
     }
 
     private void OnEnable()
@@ -132,7 +136,8 @@ public class LevelEditor : MonoBehaviour
 
     public void Play(string levelName)
     {
-        Debug.Log("Play: " + levelName);        
+        PlayerPrefs.SetString(Strings.NextLevel_PlayerPref_String, levelName);
+        SceneManager.LoadScene(SceneNames.GameScene);
     }
 
     public void Load(string levelName)
@@ -143,12 +148,17 @@ public class LevelEditor : MonoBehaviour
             grid.HasPlayer = false;
         }
 
-        _levelFileReader.SetFileName(levelName);
-        var levelProperties = _levelFileReader.GetCurrentLevelProperties();
+        var levelProperties = LevelFileReader.ConvertFileToLevelProperties(levelName);
         var gridWidth = levelProperties.GridWidth;
         var gridHeight = levelProperties.GridHeight;
 
-        GetGridByPosition(new Vector2Int(levelProperties.PlayerPosX, levelProperties.PlayerPosY)).HasPlayer = true;
+        var playerPos = new Vector2Int(levelProperties.PlayerPosX, levelProperties.PlayerPosY);
+        var playerGrid = GetGridByPosition(playerPos);
+        
+        playerGrid.HasPlayer = true;
+        playerGrid.Color = levelProperties.PlayerColor;
+
+        _lastPlayerLocation = playerPos;
 
         for (var x = 0; x < gridWidth; ++x)
         {
@@ -156,7 +166,11 @@ public class LevelEditor : MonoBehaviour
             {
                 var enabled = levelProperties.GetCellEnabled(x, y);
 
-                if (!enabled) continue;
+                if (!enabled) 
+                    continue;
+
+                if (GetGridByPosition(new Vector2Int(x, y)).HasPlayer)
+                    continue;
 
                 var current = GetGridByPosition(new Vector2Int(x, y));
 
@@ -171,8 +185,6 @@ public class LevelEditor : MonoBehaviour
 
     public string GetSaveFile(string levelName)
     {
-        Debug.Log("Save: " + levelName);
-
         var minY = _defaultGridSize.y;
         var maxY = 0;
         var minX = _defaultGridSize.x;
@@ -273,8 +285,8 @@ public class LevelEditor : MonoBehaviour
 
         var previousPlayerGrid = GetGridByPosition(_lastPlayerLocation);
 
-        previousPlayerGrid.Enabled = false;
         previousPlayerGrid.HasPlayer = false;
+        previousPlayerGrid.Enabled = true;
 
         _lastPlayerLocation = touchPositionInt;
     }

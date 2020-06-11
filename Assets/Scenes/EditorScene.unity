@@ -4723,7 +4723,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1911817338}
   - component: {fileID: 1911817339}
-  - component: {fileID: 1911817340}
   m_Layer: 0
   m_Name: LevelEditor
   m_TagString: Untagged
@@ -4769,20 +4768,7 @@ MonoBehaviour:
   _itemTypeDropdown: {fileID: 1888354444}
   _itemColorDropdown: {fileID: 891564322}
   _insertModeDropdown: {fileID: 1151036673}
-  _levelFileReader: {fileID: 1911817340}
---- !u!114 &1911817340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1911817337}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 873a3c6e06b73884ca2cc3a56811b889, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _fileName: denemeLevel.lvl
+  _levelNameInputField: {fileID: 520309836}
 --- !u!1 &1916735148
 GameObject:
   m_ObjectHideFlags: 0
