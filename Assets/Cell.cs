@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEditor.VersionControl;
 
 public class Cell : MonoBehaviour
 {

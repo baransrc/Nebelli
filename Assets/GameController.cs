@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.UIElements;
 using UnityEngine;
 
 public enum Direction
@@ -37,7 +34,7 @@ public class GameController : MonoBehaviour
 
     private void InitializeLevel()
     {
-        var levelProperties = LevelFileReader.ConvertFileToLevelProperties(PlayerPrefs.GetString(Strings.NextLevel_PlayerPref_String, "denemeLevel.lvl"));
+        var levelProperties = LevelFileReader.ConvertFileToLevelProperties(PlayerPrefs.GetString(Strings.NextLevel_PlayerPref_String, "denemeLevel"));
 
         _gridWidth = levelProperties.GridWidth;
         _gridHeight = levelProperties.GridHeight;

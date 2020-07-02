@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -54,7 +53,7 @@ public class LevelEditor : MonoBehaviour
 
         GetGridByPosition(_lastPlayerLocation).HasPlayer = true;
 
-        var currentLevel = PlayerPrefs.GetString(Strings.NextLevel_PlayerPref_String, "denemeLevel.lvl");
+        var currentLevel = PlayerPrefs.GetString(Strings.NextLevel_PlayerPref_String, "denemeLevel");
         _levelNameInputField.text = currentLevel;
         Load(currentLevel);
     }
@@ -116,6 +115,7 @@ public class LevelEditor : MonoBehaviour
 
     private bool CanDetectTouch()
     {
+        Debug.Log(!_itemTypeDropdown.IsExpanded && !_itemColorDropdown.IsExpanded && !_insertModeDropdown.IsExpanded);
         return !_itemTypeDropdown.IsExpanded && !_itemColorDropdown.IsExpanded && !_insertModeDropdown.IsExpanded;
     }
 

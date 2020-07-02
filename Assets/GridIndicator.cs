@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Xml.Schema;
-using UnityEditor.Build;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GridIndicator : MonoBehaviour
 {

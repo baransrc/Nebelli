@@ -8,8 +8,7 @@ public static class LevelFileReader
 {
     public static LevelProperties ConvertFileToLevelProperties(string fileName)
     {
-        var lines = File.ReadAllLines(Strings.LevelDataPath + fileName);
-
+        var lines = File.ReadAllLines(Strings.LevelDataPath + fileName + ".lvl");
 
         var gridWidth = int.Parse(string.Join("", lines[0].Split(':').Skip(1)));
         var gridHeight = int.Parse(string.Join("", lines[1].Split(':').Skip(1)));
